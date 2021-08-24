@@ -22,6 +22,17 @@ export class TokenStream<T extends string> {
 			return undefined;
 		}
 	}
+	public peek<O, S extends Parser<O, T>>(parser: { new(): S }): boolean {
+		let offset = this.offset;
+		let result = true;
+		try {
+			(new parser()).parse(this);
+		} catch {
+			result = false;
+		}
+		this.offset = offset;
+		return result;
+	}
 	public getNextToken(): Token<T> | undefined {
 		return this.tokens[this.offset++];
 	}
