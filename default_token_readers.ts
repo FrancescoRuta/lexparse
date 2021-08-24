@@ -1,6 +1,6 @@
 import { TokenReader, TokenReaderOutput, Parser, Span, TokenStream } from "./mod.ts";
 
-export function testRegex(regex: RegExp, char: string): boolean {
+export function testRegExp(regex: RegExp, char: string): boolean {
 	return char != null && regex.test(char);
 }
 
@@ -35,8 +35,8 @@ export abstract class AbstractIdent<T extends string> implements TokenReader<T>,
 		let length = 1;
 		let firstChar = this.allowedFirstChars;
 		let allChars = this.allowedChars;
-		if (!testRegex(firstChar, str[0])) return null;
-		while (testRegex(allChars, str[length])) length++;
+		if (!testRegExp(firstChar, str[0])) return null;
+		while (testRegExp(allChars, str[length])) length++;
 		return {
 			length,
 			type: this.type,
@@ -55,13 +55,13 @@ export abstract class AbstractInteger<T extends string> implements TokenReader<T
 		return {
 			type: value.type,
 			rawContent: value.content,
-			value: value.content.replaceAll(/\_/, ""),
+			value: value.content.replaceAll(/\_/g, ""),
 			span: value.span
 		}
 	}
 	public tryRead(str: string): TokenReaderOutput<T> {
 		let length = 0;
-		while (testRegex(/[0-9\_]/, str[length])) length++;
+		while (testRegExp(/[0-9\_]/, str[length])) length++;
 		return {
 			length,
 			type: this.type,
@@ -80,17 +80,17 @@ export abstract class AbstractReal<T extends string> implements TokenReader<T>, 
 		return {
 			type: value.type,
 			rawContent: value.content,
-			value: value.content.replaceAll(/\_/, ""),
+			value: value.content.replaceAll(/\_/g, ""),
 			span: value.span
 		}
 	}
 	public tryRead(str: string): TokenReaderOutput<T> {
 		let length = 0;
-		while (testRegex(/[0-9\_]/, str[length])) length++;
+		while (testRegExp(/[0-9\_]/, str[length])) length++;
 		if (length == 0) return null;
 		if (str[length++] != ".") return null;
-		if (!testRegex(/[0-9]/, str[length++])) return null;
-		while (testRegex(/[0-9\_]/, str[length])) length++;
+		if (!testRegExp(/[0-9]/, str[length++])) return null;
+		while (testRegExp(/[0-9\_]/, str[length])) length++;
 		return {
 			length,
 			type: this.type,
