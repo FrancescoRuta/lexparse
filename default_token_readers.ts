@@ -60,7 +60,7 @@ export abstract class AbstractInteger<T extends string> implements TokenReader<T
 		}
 	}
 	public tryRead(str: string): TokenReaderOutput<T> {
-		let length = 1;
+		let length = 0;
 		while (testRegex(/[0-9\_]/, str[length])) length++;
 		return {
 			length,
@@ -85,8 +85,9 @@ export abstract class AbstractReal<T extends string> implements TokenReader<T>, 
 		}
 	}
 	public tryRead(str: string): TokenReaderOutput<T> {
-		let length = 1;
+		let length = 0;
 		while (testRegex(/[0-9\_]/, str[length])) length++;
+		if (length == 0) return null;
 		if (str[length++] != ".") return null;
 		if (!testRegex(/[0-9]/, str[length++])) return null;
 		while (testRegex(/[0-9\_]/, str[length])) length++;
