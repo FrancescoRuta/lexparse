@@ -183,9 +183,9 @@ export abstract class AbstractString<T extends string> implements TokenReader<T>
 	public parse(ts: TokenStream<T>): BaseToken<T> {
 		let value = ts.getNextTokenStrict(this.type);
 		let str = "";
-		let i = 0;
+		let i = 1;
 		let escapeChar = this.escapeChar;
-		while (i < value.content.length) {
+		while (i < value.content.length - 1) {
 			if (value.content[i] == escapeChar) ++i;
 			str += value.content[i++];
 		}
