@@ -23,17 +23,17 @@ class WhiteSpace extends AbstractWhiteSpace<TokenType> {
 }
 
 
-let lb = new LexerBuilder()
+let lexerBuilder = new LexerBuilder()
 	.pushTokenReader(new Ident)
 	.pushTokenReader(new String)
 	.pushTokenReader(new WhiteSpace)
 ;
 
-let lexer = lb.build(`
-	ident
-	"str'ing1"
-	'str\\"\\'ing2'
-`);
+let ts = new TokenStream(lexerBuilder.build(`
+ident
+"str'ing1"
+'str\\"\\'ing2'
+`));
 
 
 class TestParser implements Parser<{ ident: string, str1: string, str2: string }, TokenType> {
@@ -50,6 +50,5 @@ class TestParser implements Parser<{ ident: string, str1: string, str2: string }
 }
 
 
-let tokens = lexer.getAllRemainingTokens();
-let ts = new TokenStream(tokens);
+
 console.log(ts.parse(TestParser));

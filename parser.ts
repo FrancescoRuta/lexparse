@@ -1,4 +1,5 @@
 import { Token } from "./structs.ts";
+import { Lexer } from "./lexer.ts";
 
 export interface Parser<O, T extends string> {
 	parse(ts: TokenStream<T>): O;
@@ -6,9 +7,24 @@ export interface Parser<O, T extends string> {
 
 export class TokenStream<T extends string> {
 	private offset: number;
+	private getToken: (index: number) => (Token<T> | undefined);
 	
-	public constructor(private tokens: Token<T>[]) {
+	public constructor(ts: Token<T>[] | Lexer<T>) {
 		this.offset = 0;
+		if (Array.isArray(ts)) {
+			this.getToken = (index: number) => ts[index];
+		} else {
+			this.getToken = this.getTokenFromStream(ts);
+		}
+	}
+	private getTokenFromStream(ts: Lexer<T>): (index: number) => (Token<T> | undefined) {
+		let cache: Token<T>[] = [];
+		return (index: number) => {
+			let i = cache.length;
+			let tmp;
+			while (i <= index && (tmp = ts.readNextToken()) != null) if (!tmp.skip) cache[i++] = tmp.token;
+			return cache[index];
+		};
 	}
 	public parse<O, S extends Parser<O, T>>(parser: { new(): S }): O {
 		return (new parser()).parse(this);
@@ -34,7 +50,7 @@ export class TokenStream<T extends string> {
 		return result;
 	}
 	public getNextToken(): Token<T> | undefined {
-		return this.tokens[this.offset++];
+		return this.getToken(this.offset++);
 	}
 	public getNextTokenStrict<F extends T>(...type: F[]): Token<F> {
 		let token = this.getNextToken();
