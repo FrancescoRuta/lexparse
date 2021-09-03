@@ -77,5 +77,33 @@ export class Lexer<T extends string> {
 		return { token: result, skip: res.skip === true };
 	}
 	
+	public clone(): Lexer<T> {
+		let l = new Lexer(this.str, this.readers, this.filename);
+		l.offset = this.offset;
+		l.currentLine = this.currentLine;
+		l.currentColumn = this.currentColumn;
+		l.spanGroup = this.spanGroup;
+		return l;
+	}
+	
+	public get cursor(): Cursor {
+		return {
+			offset: this.offset,
+			currentLine: this.currentLine,
+			currentColumn: this.currentColumn,
+		};
+	}
+	
+	public set cursor(value: Cursor) {
+		this.offset = value.offset;
+		this.currentLine = value.currentLine;
+		this.currentColumn = value.currentColumn;
+	}
+	
 }
 
+export interface Cursor {
+	offset: number;
+	currentLine: number;
+	currentColumn: number;
+}
