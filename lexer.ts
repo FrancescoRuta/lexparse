@@ -43,7 +43,7 @@ export class Lexer<T extends string> {
 		let str = this.str.substring(this.offset);
 		let res: TokenReaderOutput<T> = null;
 		for (let reader of this.readers) {
-			if ((res = reader.tryRead(str, this.filename)) != null) {
+			if ((res = reader.tryRead(str, this)) != null) {
 				if (res.length == 0)
 					res = null;
 				else

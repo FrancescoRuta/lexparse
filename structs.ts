@@ -1,3 +1,5 @@
+import { Lexer } from "./lexer.ts";
+
 export interface LineColumn {
 	line: number;
 	column: number;
@@ -59,5 +61,5 @@ export interface TokenReaderOkOutput<T extends string> {
 export type TokenReaderOutput<T extends string> = null | TokenReaderOkOutput<T>;
 
 export interface TokenReader<T extends string> {
-	tryRead(str: string, filename: string): TokenReaderOutput<T>;
+	tryRead(str: string, lerxerInstance: Lexer<T>): TokenReaderOutput<T>;
 }
