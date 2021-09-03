@@ -59,5 +59,5 @@ export interface TokenReaderOkOutput<T extends string> {
 export type TokenReaderOutput<T extends string> = null | TokenReaderOkOutput<T>;
 
 export interface TokenReader<T extends string> {
-	tryRead(str: string): TokenReaderOutput<T>;
+	tryRead(str: string, filename: string): TokenReaderOutput<T>;
 }
